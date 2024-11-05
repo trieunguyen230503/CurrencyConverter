@@ -9,26 +9,24 @@ Future<CurrencyData?> fetchAndStoreCurrencyData(bool hasInternet) async {
   final prefs = await SharedPreferences.getInstance();
   String? storedData = prefs.getString('currencyData');
 
-  // // Nếu có mạng, tiến hành gọi API
-  // print(hasInternet);
-  // if (hasInternet) {
-  //   final response = await http.get(Uri.parse(Config.ExchangeratesApi));
-  //   print(response.body);
-  //   if (response.statusCode == 200) {
-  //     // Parse dữ liệu JSON từ API
-  //     CurrencyData currency = CurrencyData.fromJson(json.decode(response.body));
-  //     // Lưu dữ liệu mới vào SharedPreferences
-  //     await prefs.setString('currencyData', response.body);
-  //     return currency;
-  //   } else {
-  //     throw Exception('Không thể tải dữ liệu từ API');
-  //   }
-  // }
+  // Nếu có mạng, tiến hành gọi API
+  print(hasInternet);
+  if (hasInternet) {
+    final response = await http.get(Uri.parse(Config.ExchangeratesApi));
+    print(response.body);
+    if (response.statusCode == 200) {
+      // Parse dữ liệu JSON từ API
+      CurrencyData currency = CurrencyData.fromJson(json.decode(response.body));
+      // Lưu dữ liệu mới vào SharedPreferences
+      await prefs.setString('currencyData', response.body);
+      return currency;
+    } else {
+      throw Exception('Không thể tải dữ liệu từ API');
+    }
+  }
 
   // Nếu không có mạng hoặc gọi API thất bại, trả về dữ liệu từ SharedPreferences
   if (storedData != null) {
-    print('Không mạng nè');
-    print(json.decode(storedData));
     return CurrencyData.fromJson(json.decode(storedData));
   } else {
     return null;
